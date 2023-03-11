@@ -1,9 +1,8 @@
 package com.seroja.pcbuilderapp.service;
 
-import com.seroja.pcbuilderapp.entities.Case;
-import com.seroja.pcbuilderapp.entities.Component;
+import com.seroja.pcbuilderapp.entities.Cpu;
 import com.seroja.pcbuilderapp.repo.CaseRepository;
-import com.seroja.pcbuilderapp.repo.ComponentRepository;
+import com.seroja.pcbuilderapp.repo.CpuRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
@@ -14,18 +13,18 @@ import java.util.List;
 
 @Service
 @Transactional
-public class CaseService {
+public class CpuService {
     @Autowired
-    private CaseRepository repo;
+    private CpuRepository repo;
 
-    public List<Case> listAll() {
+    public List<Cpu> listAll() {
         return repo.findAll();
     }
 
-    public void save(Case pcCase){
-        repo.save(pcCase);
+    public void save(Cpu cpu){
+        repo.save(cpu);
     }
-    public Case get(int id) {
+    public Cpu get(int id) {
         return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404),"Something wrong"));
     }
 
