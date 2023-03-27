@@ -20,14 +20,22 @@ public class CaseService {
         return repo.findAll();
     }
 
-    public void save(Case pcCase){
-        repo.save(pcCase);
+    public Case save(Case pcCase) {
+       return repo.save(pcCase);
     }
+
     public Case get(int id) {
-        return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404),"Something wrong"));
+        return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Something wrong"));
     }
 
     public void delete(int id) {
         repo.deleteById(id);
+    }
+
+    public void update(Case newCase, int id) {
+        Case caseToUpdate = get(id);
+        caseToUpdate.setName(newCase.getName());
+        caseToUpdate.setPrice(newCase.getPrice());
+        repo.save(caseToUpdate);
     }
 }

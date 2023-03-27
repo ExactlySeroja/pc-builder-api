@@ -1,8 +1,6 @@
 package com.seroja.pcbuilderapp.service;
 
-import com.seroja.pcbuilderapp.entities.Case;
 import com.seroja.pcbuilderapp.entities.Gpu;
-import com.seroja.pcbuilderapp.repo.CaseRepository;
 import com.seroja.pcbuilderapp.repo.GpuRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +20,24 @@ public class GpuService {
         return repo.findAll();
     }
 
-    public void save(Gpu gpu){
-        repo.save(gpu);
+    public Gpu save(Gpu gpu) {
+        return repo.save(gpu);
     }
+
     public Gpu get(int id) {
-        return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404),"Something wrong"));
+        return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Something wrong"));
     }
 
     public void delete(int id) {
         repo.deleteById(id);
     }
+
+    public void update(Gpu newGpu, int id) {
+        Gpu gpuToUpdate = get(id);
+        gpuToUpdate.setName(newGpu.getName());
+        gpuToUpdate.setPrice(newGpu.getPrice());
+        repo.save(gpuToUpdate);
+    }
+
+
 }

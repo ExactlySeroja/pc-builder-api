@@ -9,4 +9,5 @@ public class PcBuilderAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(PcBuilderAppApplication.class, args);
     }
+
 }

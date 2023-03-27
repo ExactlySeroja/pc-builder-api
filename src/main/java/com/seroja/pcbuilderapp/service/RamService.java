@@ -1,8 +1,6 @@
 package com.seroja.pcbuilderapp.service;
 
-import com.seroja.pcbuilderapp.entities.Case;
 import com.seroja.pcbuilderapp.entities.Ram;
-import com.seroja.pcbuilderapp.repo.CaseRepository;
 import com.seroja.pcbuilderapp.repo.RamRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +20,24 @@ public class RamService {
         return repo.findAll();
     }
 
-    public void save(Ram ram){
-        repo.save(ram);
+    public Ram save(Ram ram) {
+        return repo.save(ram);
     }
+
     public Ram get(int id) {
-        return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404),"Something wrong"));
+        return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Something wrong"));
     }
 
     public void delete(int id) {
         repo.deleteById(id);
     }
+
+    public void update(Ram newRam, int id) {
+        Ram ramToUpdate = get(id);
+        ramToUpdate.setName(newRam.getName());
+        ramToUpdate.setPrice(newRam.getPrice());
+        ramToUpdate.setType(newRam.getType());
+        repo.save(ramToUpdate);
+    }
+
 }

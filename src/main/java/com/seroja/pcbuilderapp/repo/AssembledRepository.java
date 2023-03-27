@@ -17,4 +17,6 @@ public interface AssembledRepository extends JpaRepository<Assembled, Integer> {
                     left join ram on assembled.ram_id = ram.id
                     left join drives on assembled.drive_id = drives.id where assembled.id = ?1\s""", nativeQuery = true)
     int calculateTotalPrice(int id);
+
+
 }
