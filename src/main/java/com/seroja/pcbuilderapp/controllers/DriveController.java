@@ -1,9 +1,9 @@
 package com.seroja.pcbuilderapp.controllers;
 
-import com.seroja.pcbuilderapp.entities.Cpu;
-import com.seroja.pcbuilderapp.entities.Drive;
+import com.seroja.pcbuilderapp.dto.DriveDto;
 import com.seroja.pcbuilderapp.service.DriveService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,39 +13,38 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
+@RequiredArgsConstructor
 public class DriveController {
-    @Autowired
-    DriveService service;
+
+    private final DriveService service;
 
     @GetMapping(value = "/components/drives")
-    public List<Drive> list() {
+    public List<DriveDto> list() {
         return service.listAll();
     }
 
 
     @GetMapping("/components/drives/{id}")
-    public ResponseEntity<Drive> get(@PathVariable Integer id) {
+    public ResponseEntity<DriveDto> getDto(@PathVariable Integer id) {
         try {
-            Drive drive = service.get(id);
-            return new ResponseEntity<>(drive, HttpStatus.OK);
+            return new ResponseEntity<>(service.getDto(id), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/components/drives")
-    public ResponseEntity<?> add(@RequestBody Drive drive) {
+    public ResponseEntity<?> add(@RequestBody @Valid DriveDto driveDto) {
         try {
-            Drive savedDrive = service.save(drive);
-            return new ResponseEntity<>(savedDrive, HttpStatus.OK);
+            return new ResponseEntity<>(service.save(driveDto), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/components/drives/{id}")
-    public ResponseEntity<?> update(@RequestBody Drive drive, @PathVariable Integer id) {
-        service.update(drive, id);
+    public ResponseEntity<?> update(@RequestBody @Valid DriveDto driveDto, @PathVariable Integer id) {
+        service.update(driveDto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

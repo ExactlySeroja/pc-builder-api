@@ -1,6 +1,7 @@
 package com.seroja.pcbuilderapp.dto;
 
-import com.seroja.pcbuilderapp.entities.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,17 +9,27 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class AssembledDto{
-
-    int assembledId;
-    int pcCaseId;
-    int cpuId;
-    int gpuId;
-    int motherboardId;
-    int powerUnitId;
-    int ramId;
-    int driveId;
-    int ramAmount;
-    int drivesAmount;
-
+public class AssembledDto {
+    @NotNull
+    private int assembledId;
+    @NotNull
+    private int pcCaseId;
+    @NotNull
+    private int cpuId;
+    @NotNull
+    private int gpuId;
+    @NotNull
+    private int motherboardId;
+    @NotNull
+    private int powerUnitId;
+    @NotNull
+    private int ramId;
+    @NotNull
+    private int driveId;
+    @Min(1)
+    @NotNull
+    private int ramAmount;
+    @Min(1)
+    @NotNull
+    private int drivesAmount;
 }

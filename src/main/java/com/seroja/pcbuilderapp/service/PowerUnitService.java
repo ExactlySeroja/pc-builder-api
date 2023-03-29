@@ -1,9 +1,11 @@
 package com.seroja.pcbuilderapp.service;
 
+import com.seroja.pcbuilderapp.dto.PowerUnitDto;
 import com.seroja.pcbuilderapp.entities.PowerUnit;
-import com.seroja.pcbuilderapp.repo.PowerUnitRepository;
+import com.seroja.pcbuilderapp.mapper.PowerUnitMapper;
+import com.seroja.pcbuilderapp.repos.PowerUnitRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,31 +14,38 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PowerUnitService {
-    @Autowired
-    private PowerUnitRepository repo;
+    private final PowerUnitRepository repo;
+    private final PowerUnitMapper powerUnitMapper;
 
-    public List<PowerUnit> listAll() {
-        return repo.findAll();
+    public List<PowerUnitDto> listAll() {
+        return powerUnitMapper.toDtoList(repo.findAll());
     }
 
-    public PowerUnit save(PowerUnit powerUnit) {
-        return repo.save(powerUnit);
+    public PowerUnitDto save(PowerUnitDto powerUnitDto) {
+        return powerUnitMapper.toDto(repo.save(powerUnitMapper.toPowerUnit(powerUnitDto)));
     }
 
     public PowerUnit get(int id) {
-        return repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Something wrong"));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Power Unit was not found!"));
+    }
+
+    public PowerUnitDto getDto(int id) {
+        return powerUnitMapper.toDto(repo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "Power Unit was not found!")));
     }
 
     public void delete(int id) {
         repo.deleteById(id);
     }
 
-    public void update(PowerUnit newPowerUnit, int id) {
-        PowerUnit powerUnitToUpdate = get(id);
-        powerUnitToUpdate.setName(newPowerUnit.getName());
-        powerUnitToUpdate.setPrice(newPowerUnit.getPrice());
-        save(powerUnitToUpdate);
+    public void update(PowerUnitDto newPowerUnitDto, int id) {
+        PowerUnit exsistPowerUnit = get(id);
+        PowerUnit update = powerUnitMapper.toPowerUnit(newPowerUnitDto);
+        powerUnitMapper.update(exsistPowerUnit, update);
+        repo.save(exsistPowerUnit);
     }
 
 }

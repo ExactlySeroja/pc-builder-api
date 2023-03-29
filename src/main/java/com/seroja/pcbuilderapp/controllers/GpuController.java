@@ -1,8 +1,9 @@
 package com.seroja.pcbuilderapp.controllers;
 
-import com.seroja.pcbuilderapp.entities.Gpu;
+import com.seroja.pcbuilderapp.dto.GpuDto;
 import com.seroja.pcbuilderapp.service.GpuService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,38 +13,37 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
+@RequiredArgsConstructor
 public class GpuController {
-    @Autowired
-    GpuService service;
+    private final GpuService service;
 
     @GetMapping(value = "/components/gpu")
-    public List<Gpu> list() {
+    public List<GpuDto> list() {
         return service.listAll();
     }
 
 
     @GetMapping("/components/gpu/{id}")
-    public ResponseEntity<Gpu> get(@PathVariable Integer id) {
+    public ResponseEntity<GpuDto> getDto(@PathVariable Integer id) {
         try {
-            Gpu gpu = service.get(id);
-            return new ResponseEntity<>(gpu, HttpStatus.OK);
+            return new ResponseEntity<>(service.getDto(id), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @PostMapping("/components/gpu")
-    public ResponseEntity<?> add(@RequestBody Gpu gpu) {
+    public ResponseEntity<?> add(@RequestBody @Valid GpuDto gpuDto) {
         try {
-            Gpu savedGpu = service.save(gpu);
-            return new ResponseEntity<>(savedGpu, HttpStatus.OK);
+            return new ResponseEntity<>(service.save(gpuDto), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/components/gpu/{id}")
-    public ResponseEntity<?> update(@RequestBody Gpu gpu, @PathVariable Integer id) {
-        service.update(gpu, id);
+    public ResponseEntity<?> update(@RequestBody @Valid GpuDto gpuDto, @PathVariable Integer id) {
+        service.update(gpuDto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

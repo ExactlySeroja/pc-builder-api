@@ -1,4 +1,6 @@
 package com.seroja.pcbuilderapp.dto;
 
-public record PcBudgetRequest(int budget, int ramAmount, int drivesAmount) {
+import jakarta.validation.constraints.Min;
+
+public record PcBudgetRequest(@Min(1) int budget, @Min(1) int ramAmount, @Min(1) int drivesAmount) {
 }

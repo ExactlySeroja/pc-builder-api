@@ -1,9 +1,9 @@
 package com.seroja.pcbuilderapp.controllers;
 
-import com.seroja.pcbuilderapp.entities.Cpu;
-import com.seroja.pcbuilderapp.entities.Ram;
+import com.seroja.pcbuilderapp.dto.RamDto;
 import com.seroja.pcbuilderapp.service.RamService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,39 +13,37 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
+@RequiredArgsConstructor
 public class RamController {
-    @Autowired
-    RamService service;
+    private final RamService service;
 
     @GetMapping(value = "/components/ram")
-    public List<Ram> list() {
+    public List<RamDto> list() {
         return service.listAll();
     }
 
 
     @GetMapping("/components/ram/{id}")
-    public ResponseEntity<Ram> get(@PathVariable Integer id) {
+    public ResponseEntity<RamDto> get(@PathVariable Integer id) {
         try {
-            Ram ram = service.get(id);
-            return new ResponseEntity<>(ram, HttpStatus.OK);
+            return new ResponseEntity<>(service.getDto(id), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/components/ram")
-    public ResponseEntity<?> add(@RequestBody Ram ram) {
+    public ResponseEntity<?> add(@RequestBody @Valid RamDto ramDto) {
         try {
-            Ram savedRam = service.save(ram);
-            return new ResponseEntity<>(savedRam, HttpStatus.OK);
+            return new ResponseEntity<>(service.save(ramDto), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/components/ram/{id}")
-    public ResponseEntity<?> update(@RequestBody Ram ram, @PathVariable Integer id) {
-        service.update(ram, id);
+    public ResponseEntity<?> update(@RequestBody @Valid RamDto ramDto, @PathVariable Integer id) {
+        service.update(ramDto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

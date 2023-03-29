@@ -1,4 +1,4 @@
-package com.seroja.pcbuilderapp.repo;
+package com.seroja.pcbuilderapp.repos;
 
 import com.seroja.pcbuilderapp.entities.Motherboard;
 import org.springframework.data.jpa.repository.JpaRepository;

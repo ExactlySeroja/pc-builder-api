@@ -1,9 +1,9 @@
 package com.seroja.pcbuilderapp.controllers;
 
-import com.seroja.pcbuilderapp.entities.Case;
-import com.seroja.pcbuilderapp.entities.Cpu;
+import com.seroja.pcbuilderapp.dto.CaseDto;
 import com.seroja.pcbuilderapp.service.CaseService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,39 +13,37 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
+@RequiredArgsConstructor
 public class PcCaseController {
-    @Autowired
-    CaseService service;
+    private final CaseService service;
 
     @GetMapping(value = "/components/cases")
-    public List<Case> list() {
+    public List<CaseDto> list() {
         return service.listAll();
     }
 
 
     @GetMapping("/components/cases/{id}")
-    public ResponseEntity<Case> get(@PathVariable Integer id) {
+    public ResponseEntity<CaseDto> getDto(@PathVariable Integer id) {
         try {
-            Case pcCase = service.get(id);
-            return new ResponseEntity<>(pcCase, HttpStatus.OK);
+            return new ResponseEntity<>(service.getDto(id), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/components/cases")
-    public ResponseEntity<?> add(@RequestBody Case pcCase) {
+    public ResponseEntity<?> add(@RequestBody @Valid CaseDto pcCaseDto) {
         try {
-            Case savedPcCase = service.save(pcCase);
-            return new ResponseEntity<>(savedPcCase, HttpStatus.OK);
+            return new ResponseEntity<>(service.save(pcCaseDto), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/components/cases/{id}")
-    public ResponseEntity<?> update(@RequestBody Case pcCase, @PathVariable Integer id) {
-        service.update(pcCase, id);
+    public ResponseEntity<?> update(@RequestBody @Valid CaseDto pcCaseDto, @PathVariable Integer id) {
+        service.update(pcCaseDto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

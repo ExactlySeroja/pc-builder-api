@@ -1,9 +1,9 @@
 package com.seroja.pcbuilderapp.controllers;
 
-import com.seroja.pcbuilderapp.entities.Assembled;
-import com.seroja.pcbuilderapp.entities.Cpu;
+import com.seroja.pcbuilderapp.dto.CpuDto;
 import com.seroja.pcbuilderapp.service.CpuService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,39 +13,37 @@ import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
+@RequiredArgsConstructor
 public class CpuController {
-    @Autowired
-    CpuService service;
+    private final CpuService service;
 
     @GetMapping(value = "/components/cpu")
-    public List<Cpu> list() {
+    public List<CpuDto> list() {
         return service.listAll();
     }
 
 
     @GetMapping("/components/cpu/{id}")
-    public ResponseEntity<Cpu> get(@PathVariable Integer id) {
+    public ResponseEntity<CpuDto> get(@PathVariable Integer id) {
         try {
-            Cpu cpu = service.get(id);
-            return new ResponseEntity<>(cpu, HttpStatus.OK);
+            return new ResponseEntity<>(service.getDto(id), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/components/cpu")
-    public ResponseEntity<?> add(@RequestBody Cpu cpu) {
+    public ResponseEntity<?> add(@RequestBody @Valid CpuDto cpuDto) {
         try {
-            Cpu savedCpu = service.save(cpu);
-            return new ResponseEntity<>(savedCpu, HttpStatus.OK);
+            return new ResponseEntity<>(service.save(cpuDto), HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/components/cpu/{id}")
-    public ResponseEntity<?> update(@RequestBody Cpu cpu, @PathVariable Integer id) {
-        service.update(cpu, id);
+    public ResponseEntity<?> update(@RequestBody @Valid CpuDto cpuDto, @PathVariable Integer id) {
+        service.update(cpuDto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
